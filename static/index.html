@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Udyam Express · Accel Business</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo">A</span><div><b>Udyam Express</b><small>Accel Business · one sitting, one bill</small></div></div>
+  <nav>
+    <button data-view="owner" class="on">Owner app</button>
+    <button data-view="office">Back office</button>
+  </nav>
+</header>
+
+<main id="owner" class="view on">
+  <section class="phone">
+    <div class="steps" id="steps">
+      <button data-step="chat" class="on"><i>1</i>Advisor</button>
+      <button data-step="quote"><i>2</i>Quote</button>
+      <button data-step="kyc"><i>3</i>KYC</button>
+      <button data-step="track"><i>4</i>Track</button>
+    </div>
+
+    <!-- 1 ADVISOR -->
+    <div class="step on" id="chat">
+      <div class="chatbar">
+        <select id="lang" aria-label="Language">
+          <option value="en">English</option><option value="hi">हिन्दी</option><option value="hinglish">Hinglish</option>
+          <option value="mr">मराठी</option><option value="ta">தமிழ்</option><option value="te">తెలుగు</option>
+          <option value="bn">বাংলা</option><option value="gu">ગુજરાતી</option><option value="kn">ಕನ್ನಡ</option>
+        </select>
+        <span id="aiBadge" class="badge">rules</span>
+        <button id="restart" class="ghost">Start over</button>
+      </div>
+      <div id="log" class="log" aria-live="polite"></div>
+      <div id="chips" class="chips"></div>
+      <form id="send" class="send">
+        <button type="button" id="mic" title="Speak" aria-label="Speak">🎤</button>
+        <input id="msg" autocomplete="off" placeholder="Type or speak… e.g. Dental clinic in Pune, 8 staff">
+        <button class="primary" aria-label="Send">➤</button>
+      </form>
+    </div>
+
+    <!-- 2 QUOTE -->
+    <div class="step" id="quote">
+      <div id="quoteBody" class="pad"><p class="muted">Chat with the advisor first — your bundle appears here.</p></div>
+    </div>
+
+    <!-- 3 KYC -->
+    <div class="step" id="kyc">
+      <div class="pad">
+        <div id="consentBox" class="card">
+          <h3>Before we verify: your consent</h3>
+          <p class="muted small">We collect only what telecom KYC needs. Documents are read on Accel's own servers, never sent to an AI model, and deleted 30 days after verification. You can withdraw any time.</p>
+          <div id="purposes"></div>
+          <button id="giveConsent" class="primary wide">I agree — continue</button>
+        </div>
+        <div id="uploadBox" class="card hidden">
+          <h3>Upload 4 documents</h3>
+          <p class="muted small">Photos are fine. Or try a specimen applicant (K01–K12) to see the checks.</p>
+          <div class="uploads">
+            <label>GST certificate<input type="file" accept="image/*" data-doc="gst_certificate"></label>
+            <label>Udyam certificate<input type="file" accept="image/*" data-doc="udyam_certificate"></label>
+            <label>Signatory ID<input type="file" accept="image/*" data-doc="signatory_id"></label>
+            <label>Address proof (bill)<input type="file" accept="image/*" data-doc="address_proof"></label>
+          </div>
+          <div class="row"><button id="verifyBtn" class="primary">Verify my documents</button>
+            <select id="specimen"><option value="">or specimen…</option></select></div>
+          <button id="withdraw" class="ghost small">Withdraw consent &amp; erase</button>
+        </div>
+        <div id="kycResult"></div>
+      </div>
+    </div>
+
+    <!-- 4 TRACK -->
+    <div class="step" id="track">
+      <div class="pad">
+        <form id="trackForm" class="row"><input id="orderId" placeholder="Order ID e.g. AB12CD34"><button class="primary">Track</button></form>
+        <div id="trackBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="side">
+    <h2>One sitting. One bill. In your language.</h2>
+    <p>The <b>AI talks, the rules engine decides</b>: every product, price and eligibility rule comes from the Accel catalogue; the language model only understands and phrases.</p>
+    <div class="why" id="why"><h4>Behind the screen</h4><p class="muted small">Your profile and the rules applied appear here as you chat.</p></div>
+    <div class="try"><h4>Try these</h4>
+      <button class="eg">Dental clinic in Pune, 8 staff, 1 clinic, need CCTV and backup internet</button>
+      <button class="eg">मेरी पटना में किराना दुकान है, 2 लोग, UPI बिलिंग और व्हाट्सएप चाहिए, GST नहीं है</button>
+      <button class="eg">3 restaurants in Bengaluru, 30 staff, GST yes, billing and cameras at each</button>
+      <button class="eg">32TTNXB7384T1ZW</button>
+      <button class="eg">Auto-parts unit in Ludhiana, 45 workers, GST yes, machine monitoring for 8 machines</button>
+      <button class="eg">kirana hai gaon mein, net chahiye</button>
+    </div>
+  </aside>
+</main>
+
+<main id="office" class="view">
+  <div class="office">
+    <div class="kpis" id="kpis"></div>
+    <div class="grid2">
+      <div class="card"><h3>Advisor hand-offs <small class="muted">(chats the bot couldn't close → partner / field rep)</small></h3><div id="handoffs"></div></div>
+      <div class="card"><h3>Live orders</h3><div id="orders"></div></div>
+    </div>
+    <div class="card"><h3>Win-back queue <small class="muted" id="modelInfo"></small></h3>
+      <div class="row"><select id="segFilter"><option value="">All segments</option><option>Micro retail &amp; services</option><option>Professional offices</option><option>Small multi-site businesses</option><option>Small manufacturers</option></select></div>
+      <div id="winback" class="tablewrap"></div></div>
+    <div class="grid2">
+      <div class="card"><h3>Funnel (Apr–Jun 2026)</h3><div id="funnel"></div></div>
+      <div class="card"><h3>Where leads drop &amp; what fixes it</h3><div id="drops"></div></div>
+    </div>
+  </div>
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>
