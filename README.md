@@ -1,5 +1,6 @@
 # Udyam Express — a small business goes digital in one sitting
 
+**Team WWCD · Thapar Institute of Engineering and Technology**
 **Airtel SYNC 2026 · Digital / Enterprise Track A · Project Udyam Digital**
 _The case uses a fictional operator, Accel Telecom, and its B2B arm Accel Business. All data is synthetic._
 
@@ -8,10 +9,12 @@ A phone-first journey where a small-business owner **chats (or speaks) in their 
 | Deliverable | Where |
 |---|---|
 | Working prototype (code) | this repo — run it in one command (below) |
-| Demo video (≤ 3 min) | `submission/` (link in the deck) |
-| Business case (7 slides, Airtel SYNC template) | [`submission/UdyamExpress_Submission.pptx`](submission/UdyamExpress_Submission.pptx) · PDF alongside |
+| Demo video (2 min 6 s) | [`submission/UdyamExpress_Demo.mp4`](submission/UdyamExpress_Demo.mp4) |
+| Business case (7 slides, Airtel SYNC template) | [`PPTX`](submission/UdyamExpress_Submission.pptx) · [`PDF`](submission/UdyamExpress_Submission.pdf) |
 | Solution architecture | [`submission/UdyamExpress_Architecture.pdf`](submission/UdyamExpress_Architecture.pdf) |
 | 1-page privacy & security note | [`submission/UdyamExpress_Privacy_Note.pdf`](submission/UdyamExpress_Privacy_Note.pdf) |
+
+![Owner app](docs/screenshots/01-advisor.png)
 
 ## What it does (the four required modules + all three stretch goals)
 
