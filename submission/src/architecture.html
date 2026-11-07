@@ -1,0 +1,50 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Udyam Express architecture</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#16181d;background:#fff}
+.wrap{width:1600px;height:820px;padding:34px 40px;position:relative}
+h1{margin:0;font-size:30px}h1 small{font-size:16px;color:#667085;font-weight:400;margin-left:10px}
+.cols{display:grid;grid-template-columns:270px 1fr 330px;gap:26px;margin-top:22px;height:auto}
+.col h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#667085;margin:0 0 10px}
+.box{border:2px solid #e6e8ec;border-radius:14px;padding:12px 14px;margin-bottom:12px;background:#fff}
+.box b{display:block;font-size:17px;margin-bottom:3px}.box span{font-size:13.5px;color:#475467;line-height:1.35}
+.red{border-color:#d71920;background:#fff5f5}.dark{background:#16181d;color:#fff;border-color:#16181d}.dark span{color:#d0d5dd}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.core{border:2px dashed #d71920;border-radius:18px;padding:14px;position:relative}
+.core > .lbl{position:absolute;top:-12px;left:16px;background:#fff;padding:0 8px;color:#d71920;font-weight:700;font-size:14px}
+.pill{display:inline-block;font-size:12px;background:#f2f4f7;border-radius:999px;padding:2px 8px;margin:2px 2px 0 0}
+.flow{font-size:13px;color:#475467;margin-top:8px;line-height:1.5}
+.arrow{position:absolute;font-size:28px;color:#d71920;font-weight:700}
+.legend{position:absolute;bottom:22px;left:40px;right:40px;font-size:13px;color:#475467;display:flex;gap:26px}
+.legend b{color:#16181d}
+</style></head><body><div class="wrap">
+<h1>Udyam Express — solution architecture <small>prototype components (solid) · production integrations (mocked with real API shapes)</small></h1>
+<div class="cols">
+ <div class="col"><h2>Channels</h2>
+  <div class="box red"><b>Owner web app (PWA)</b><span>Phone-first chat + voice (9 Indian locales), quote, KYC, tracker</span></div>
+  <div class="box"><b>WhatsApp / IVR</b><span>Same advisor API behind WhatsApp Business API (production)</span></div>
+  <div class="box"><b>Partner / field tablet</b><span>Assisted mode: same flow, commission credited to the partner</span></div>
+  <div class="box dark"><b>Back office</b><span>Hand-offs, live orders, win-back queue, funnel</span></div>
+ </div>
+ <div class="col"><h2>Udyam Express platform (FastAPI)</h2>
+  <div class="core"><div class="lbl">AI talks · rules decide</div>
+   <div class="grid">
+    <div class="box red"><b>1 · Advisor</b><span>Rule-based NLU (EN / हिन्दी / Hinglish) + optional Gemini extraction & phrasing. Hand-off rules: tier-3, &gt;10 sites, custom needs.</span><div><span class="pill">nlu.py</span><span class="pill">advisor.py</span><span class="pill">llm.py</span></div></div>
+    <div class="box red"><b>2 · Rules engine & OneBill</b><span>Catalogue eligibility (tier, staff, sites, GST), dependencies, 3 tiers, midpoint pricing, GST shown separately, 24-mo setup waiver.</span><div><span class="pill">core.py</span><span class="pill">recommender.py</span></div></div>
+    <div class="box red"><b>3 · Smart KYC</b><span>Consent ledger (hash-chained) → OCR on own server (deskew, blur gate, GSTIN look-alike fix + checksum) → registry & consistency checks → 4 verdicts.</span><div><span class="pill">kyc.py</span></div></div>
+    <div class="box red"><b>4 · Orders & tracker</b><span>6 stages, ETA per product from install days, SLA risk flag, WhatsApp updates.</span><div><span class="pill">backoffice.py</span></div></div>
+    <div class="box"><b>Propensity & win-back</b><span>Logistic regression (AUC 0.72, June hold-out) × drop-reason recoverability → next best action.</span></div>
+    <div class="box"><b>Privacy layer</b><span>PII redaction before storage/LLM, masked IDs in UI & logs, 30-day document purge, withdraw & erase.</span></div>
+   </div>
+   <div class="flow"><b>Flow:</b> chat → profile → rules engine → quote (toggles re-priced server-side) → consent → KYC verdict → e-sign & UPI AutoPay → order → tracker. Unclosed chats → lead with summary → partner.</div>
+  </div>
+ </div>
+ <div class="col"><h2>Data & integrations</h2>
+  <div class="box"><b>Catalogue (25 products)</b><span>Single source of truth for products, prices, rules</span></div>
+  <div class="box"><b>GSTIN & Udyam registries</b><span>Mock lookups from CSV → GSTN / Udyam APIs in production</span></div>
+  <div class="box"><b>5,000 historic leads</b><span>Trains the propensity model; powers the funnel & impact replay</span></div>
+  <div class="box"><b>Gemini (optional)</b><span>Gets only redacted text; never documents, never decides price</span></div>
+  <div class="box"><b>DigiLocker · Aadhaar e-Sign · UPI AutoPay · Field-ops</b><span>Production integrations (mocked in prototype)</span></div>
+ </div>
+</div>
+<div class="legend"><span><b>Stack:</b> Python 3.11 · FastAPI · pandas · scikit-learn · OpenCV + Tesseract · vanilla JS PWA · Docker</span><span><b>Runs offline at ₹0</b> — Gemini key optional</span><span><b>27 tests</b> · 0 rule violations on 5,000 profiles · 12/12 KYC</span></div>
+</div></body></html>

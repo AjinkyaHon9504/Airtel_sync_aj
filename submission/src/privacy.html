@@ -1,0 +1,41 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Udyam Express privacy note</title>
+<style>
+@page{size:A4;margin:11mm 13mm}body{font-family:Arial,Helvetica,sans-serif;color:#16181d;font-size:9.5pt;line-height:1.3;margin:0}
+h1{font-size:17pt;margin:0}h1 small{display:block;font-size:9.5pt;color:#667085;font-weight:400;margin-top:2px}
+h2{font-size:11pt;color:#d71920;margin:7px 0 2px}p{margin:0 0 4px}ul{margin:0;padding-left:16px}li{margin-bottom:2px}
+table{border-collapse:collapse;width:100%;font-size:8.8pt;margin-top:3px}td,th{border:1px solid #e6e8ec;padding:4px 6px;text-align:left;vertical-align:top}th{background:#f6f7f9}
+.box{background:#fff5f5;border:1px solid #fecdca;border-radius:6px;padding:6px 9px;margin-top:8px;font-size:9.6pt}
+</style></head><body>
+<h1>Udyam Express — data privacy &amp; security note<small>Airtel SYNC 2026 · Track A · designed to the Digital Personal Data Protection Act, 2023 (DPDP) · all prototype data is synthetic</small></h1>
+
+<h2>1. Consent before collection (DPDP s.5–6)</h2>
+<p>Before any document is uploaded the owner sees a plain-language notice in their language listing <b>each purpose separately</b>: KYC verification (required by telecom rules), registry look-up, order contact, and marketing (optional, off by default). The API refuses uploads without a KYC consent record (HTTP 403). Each consent is stored with notice version and timestamp in an <b>append-only, SHA-256 hash-chained ledger</b> so it can't be edited silently. <b>Withdraw &amp; erase</b> is one tap and deletes the KYC result.</p>
+
+<h2>2. Purpose limitation &amp; data minimisation</h2>
+<table><tr><th>Step</th><th>We collect</th><th>We deliberately don't</th></tr>
+<tr><td>Advisor chat</td><td>Business type, city, staff, sites, needs, optional GSTIN/Udyam</td><td>Aadhaar, PAN, bank, email or phone in chat — redacted before storage and before any AI call</td></tr>
+<tr><td>Registry look-up</td><td>Status + trade name only</td><td>Full registry record is not returned to the browser</td></tr>
+<tr><td>KYC</td><td>4 documents needed for telecom KYC; fields extracted</td><td>Aadhaar number (signatory ID uses its own ID no., masked); no photo storage after verdict</td></tr>
+<tr><td>Order</td><td>Contact name, phone (masked in UI: ••••••3210)</td><td>Date of birth, family details</td></tr>
+<tr><td>Lead scoring</td><td>Business attributes known at lead time</td><td>Preferred language excluded so no owner ranks lower for the language they speak</td></tr></table>
+
+<h2>3. Where data goes</h2>
+<ul><li><b>Documents never leave Accel's servers</b>: OCR runs on our own server (Tesseract + OpenCV), in memory; images are not sent to any AI model.</li>
+<li>The optional language model (Gemini) receives only <b>redacted chat text</b>; it cannot set prices or eligibility — any number in its output not present in our own text is discarded.</li>
+<li>Identifiers are <b>masked in UI, API responses and logs</b> (GSTIN ••••••••••8P1ZT, Udyam, ID numbers, phone).</li>
+<li>KYC replies never echo registry values back, so a forged document can't be "corrected" by reading our response.</li></ul>
+
+<h2>4. Retention</h2>
+<p>Raw document images: deleted <b>immediately after the verdict</b> in the prototype; in production kept encrypted (AES-256, KMS-managed keys) for at most <b>30 days</b> for dispute handling, then purged automatically. Extracted KYC fields: retained for the life of the contract + the period telecom KYC rules require, then deleted. Chat transcripts of unclosed leads: 90 days, then anonymised for analytics.</p>
+
+<h2>5. Security controls (production path)</h2>
+<ul><li>TLS 1.2+ everywhere; files limited to 8 MB images; uploads virus-scanned; server-side re-pricing so the browser can't change a price.</li>
+<li>Role-based access: partners see only leads assigned to them, with masked contact details; every reveal is logged.</li>
+<li>Back office behind SSO + MFA; audit log of KYC decisions; manual-review queue for suspected tampering.</li>
+<li>Data residency in India; breach notification to the Data Protection Board and affected owners as DPDP requires.</li></ul>
+
+<h2>6. Data principal rights</h2>
+<p>Owners can view what we hold, correct it, withdraw consent and request erasure from the app; a named grievance officer (privacy@accel.example) responds within the statutory timeline.</p>
+
+<div class="box"><b>Design principle:</b> collect the least needed for each step, keep it on our own infrastructure, mask it everywhere, and delete it on a schedule. The AI helps the owner talk; it never sees their documents.</div>
+</body></html>
